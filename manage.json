@@ -1,0 +1,14 @@
+[
+    {
+        "task": "do hw",
+        "completed": false
+    },
+    {
+        "task": "wassup",
+        "completed": false
+    },
+    {
+        "task": "done!",
+        "completed": false
+    }
+]
