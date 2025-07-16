@@ -1,5 +1,8 @@
 #stage 7
 import random
+import os
+import json
+
 
 class Character:
     def __init__(self,name, health, power):
@@ -24,6 +27,9 @@ class Character:
 
     def is_alive(self):
         return self._alive
+
+    def get_class_name(self):
+        return self.__class__.__name__
 
 
 class Warrior(Character):
@@ -62,7 +68,25 @@ class Arena:
 
         winner = self._f1 if self._f1.is_alive() else self._f2
         print(f"The winner is {winner._name}")
+        self.save_winner(winner)
 
+    def save_winner(self, winner):
+        result = {
+            "winner": winner._name,
+            "class" : winner.get_class_name(),
+        }
+
+        if os.path.exists("winners.json"):
+            with open("winners.json", "r") as file:
+                data = json.load(file)
+
+        else:
+            data = []
+
+        data.append(result)
+
+        with open("winners.json", "w") as file:
+            json.dump(data, file, indent = 4)
 
 def main():
     while True:
@@ -83,7 +107,7 @@ def main():
 
             if choice1 == choice2:
                 print("You cant choose the same fighter!")
-                return
+                continue
 
             f1 = fighters[choice1 - 1]
             f2 = fighters[choice2 - 1]
@@ -91,9 +115,8 @@ def main():
             arena = Arena(f1,f2)
             arena.fight()
 
-        except ValueError:
-            print("Something went wrong!Choose inbetween 1-3")
-            continue
+        except Exception:
+            print("Wrong choice!")
 
         play_again = input("Do you want to play again? (y/n): ").strip().lower()
         if play_again != "y":
